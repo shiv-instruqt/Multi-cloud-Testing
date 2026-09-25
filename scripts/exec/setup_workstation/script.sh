@@ -53,16 +53,24 @@ retry() {
 # ---------------------------------------------------------------------------
 # 0. Sanity check - every credential must be present
 # ---------------------------------------------------------------------------
+# Azure is optional: it is skipped when LAB_AZURE_CLIENT_ID is not provided
+# (Azure is TEMPORARILY DISABLED in cloud.hcl / sandbox.hcl).
+if [ -n "$LAB_AZURE_CLIENT_ID" ]; then
+  AZURE_ENABLED=true
+  AZURE_VARS="LAB_AZURE_CLIENT_ID LAB_AZURE_CLIENT_SECRET LAB_AZURE_TENANT_ID LAB_AZURE_SUBSCRIPTION_ID LAB_AZURE_REGION"
+else
+  AZURE_ENABLED=false
+  AZURE_VARS=""
+fi
 for v in LAB_AWS_ACCESS_KEY_ID LAB_AWS_SECRET_ACCESS_KEY LAB_AWS_REGION \
-         LAB_AZURE_CLIENT_ID LAB_AZURE_CLIENT_SECRET LAB_AZURE_TENANT_ID \
-         LAB_AZURE_SUBSCRIPTION_ID LAB_AZURE_REGION \
+         $AZURE_VARS \
          LAB_GCP_PROJECT_ID LAB_GCP_SA_KEY LAB_GCP_REGION; do
   if [ -z "$(printenv "$v")" ]; then
     log "ERROR: required environment variable $v is empty"
     exit 1
   fi
 done
-log "All cloud credentials received"
+log "All cloud credentials received (Azure enabled: $AZURE_ENABLED)"
 
 # ---------------------------------------------------------------------------
 # 1. Base packages
@@ -93,6 +101,7 @@ log "$(aws --version 2>&1)"
 # ---------------------------------------------------------------------------
 # 3. Azure CLI (official Microsoft install script for Debian/Ubuntu)
 # ---------------------------------------------------------------------------
+if [ "$AZURE_ENABLED" = "true" ]; then
 if ! command -v az >/dev/null 2>&1; then
   log "Installing Azure CLI"
   retry 5 10 curl -fsSL https://aka.ms/InstallAzureCLIDeb -o /tmp/install-az.sh
@@ -102,6 +111,7 @@ fi
 az config set core.collect_telemetry=false --only-show-errors >/dev/null 2>&1 || true
 az config set core.login_experience_v2=off --only-show-errors >/dev/null 2>&1 || true
 log "$(az version --query '"azure-cli"' -o tsv 2>/dev/null | sed 's/^/azure-cli /')"
+fi
 
 # ---------------------------------------------------------------------------
 # 4. Google Cloud CLI (official apt repository)
@@ -173,6 +183,8 @@ retry 12 5 aws s3api head-bucket --bucket "$AWS_BUCKET"
 # ---------------------------------------------------------------------------
 # 7. Azure - sign in, create resource group, storage account and container
 # ---------------------------------------------------------------------------
+AZURE_STORAGE_KEY=""
+if [ "$AZURE_ENABLED" = "true" ]; then
 azure_login() {
   # --client-secret is the current flag; --password is the older one.
   az login --service-principal \
@@ -231,6 +243,11 @@ retry 12 10 az storage container create \
   --account-name "$AZURE_STORAGE_ACCOUNT" \
   --account-key "$AZURE_STORAGE_KEY" \
   --auth-mode key --output none --only-show-errors
+else
+  log "Azure disabled - skipping Azure sign-in and storage"
+  AZURE_STORAGE_ACCOUNT="disabled"
+  AZURE_CONTAINER="disabled"
+fi
 
 # ---------------------------------------------------------------------------
 # 8. Google Cloud - activate the service account and create the GCS bucket

@@ -23,24 +23,27 @@ resource "aws_account" "multicloud" {
   }
 }
 
+# TEMPORARILY DISABLED (Azure): lab start fails in platform step UpsertAzureTag
+# (PredefinedTagNameNotFound on team_id/participant_id/track_id). Re-enable by
+# uncommenting the '# ' lines marked below once engineering has fixed it.
 # Azure - Contributor lets the setup create the resource group, the storage
 # account and read the account key used for blob upload/download.
-resource "azure_subscription" "multicloud" {
-  regions  = ["eastus"]
-  services = ["Microsoft.Storage"]
+# resource "azure_subscription" "multicloud" {
+  # regions  = ["eastus"]
+  # services = ["Microsoft.Storage"]
 
-  tags = {
-    Purpose = "multicloud-storage-lab"
-  }
+  # tags = {
+    # Purpose = "multicloud-storage-lab"
+  # }
 
-  user "student" {
-    roles = ["Contributor"]
-  }
+  # user "student" {
+    # roles = ["Contributor"]
+  # }
 
-  service_principal "automation" {
-    roles = ["Contributor"]
-  }
-}
+  # service_principal "automation" {
+    # roles = ["Contributor"]
+  # }
+# }
 
 # Google Cloud - service account with Storage Admin configures gcloud.
 resource "google_project" "multicloud" {

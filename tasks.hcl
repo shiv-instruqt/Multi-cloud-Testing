@@ -5,8 +5,8 @@
 # Page 1 - confirm the setup script provisioned everything
 # -----------------------------------------------------------------------------
 resource "task" "verify_environment" {
-  description     = "Confirm all three CLIs are signed in and every bucket exists"
-  success_message = "All three clouds are ready. Time to push some data!"
+  description     = "Confirm the CLIs are signed in and every bucket exists"
+  success_message = "AWS and Google Cloud are ready. Time to push some data!"
 
   config {
     target  = resource.container.workstation
@@ -22,14 +22,14 @@ resource "task" "verify_environment" {
     }
   }
 
-  condition "azure_ready" {
-    description = "Azure CLI is signed in and the Blob container exists"
+  # condition "azure_ready" {
+    # description = "Azure CLI is signed in and the Blob container exists"
 
-    check {
-      script          = "scripts/task/verify_environment/check_azure.sh"
-      failure_message = "The Azure CLI or the Blob container is not ready. Run `lab-info` and check /var/log/multicloud-setup.log."
-    }
-  }
+    # check {
+      # script          = "scripts/task/verify_environment/check_azure.sh"
+      # failure_message = "The Azure CLI or the Blob container is not ready. Run `lab-info` and check /var/log/multicloud-setup.log."
+    # }
+  # }
 
   condition "gcp_ready" {
     description = "Google Cloud CLI is signed in and the GCS bucket exists"
@@ -45,8 +45,8 @@ resource "task" "verify_environment" {
 # Page 2 - push the same file to all three clouds
 # -----------------------------------------------------------------------------
 resource "task" "upload_file" {
-  description     = "Upload hello-multicloud.txt to AWS S3, Azure Blob Storage and Google Cloud Storage"
-  success_message = "The file is stored in all three clouds and matches your local copy."
+  description     = "Upload hello-multicloud.txt to AWS S3 and Google Cloud Storage"
+  success_message = "The file is stored in AWS and Google Cloud and matches your local copy."
 
   config {
     target  = resource.container.workstation
@@ -66,18 +66,18 @@ resource "task" "upload_file" {
     }
   }
 
-  condition "uploaded_to_azure" {
-    description = "hello-multicloud.txt is in the Azure Blob container and matches the local file"
+  # condition "uploaded_to_azure" {
+    # description = "hello-multicloud.txt is in the Azure Blob container and matches the local file"
 
-    check {
-      script          = "scripts/task/upload_file/check_azure.sh"
-      failure_message = "hello-multicloud.txt is missing from the Azure Blob container or does not match ~/multicloud-lab/upload/hello-multicloud.txt."
-    }
+    # check {
+      # script          = "scripts/task/upload_file/check_azure.sh"
+      # failure_message = "hello-multicloud.txt is missing from the Azure Blob container or does not match ~/multicloud-lab/upload/hello-multicloud.txt."
+    # }
 
-    solve {
-      script = "scripts/task/upload_file/solve_azure.sh"
-    }
-  }
+    # solve {
+      # script = "scripts/task/upload_file/solve_azure.sh"
+    # }
+  # }
 
   condition "uploaded_to_gcp" {
     description = "hello-multicloud.txt is in the GCS bucket and matches the local file"
@@ -119,28 +119,28 @@ resource "task" "download_aws" {
   }
 }
 
-resource "task" "download_azure" {
-  description     = "Download hello-multicloud.txt from Azure Blob Storage into ~/multicloud-lab/downloads/azure/"
-  success_message = "Received from Azure Blob Storage - checksum matches the original."
+# resource "task" "download_azure" {
+  # description     = "Download hello-multicloud.txt from Azure Blob Storage into ~/multicloud-lab/downloads/azure/"
+  # success_message = "Received from Azure Blob Storage - checksum matches the original."
 
-  config {
-    target  = resource.container.workstation
-    timeout = "120s"
-  }
+  # config {
+    # target  = resource.container.workstation
+    # timeout = "120s"
+  # }
 
-  condition "received_from_azure" {
-    description = "~/multicloud-lab/downloads/azure/hello-multicloud.txt exists and its SHA-256 matches the original and the blob"
+  # condition "received_from_azure" {
+    # description = "~/multicloud-lab/downloads/azure/hello-multicloud.txt exists and its SHA-256 matches the original and the blob"
 
-    check {
-      script          = "scripts/task/download_azure/check.sh"
-      failure_message = "~/multicloud-lab/downloads/azure/hello-multicloud.txt is missing or its checksum does not match the original."
-    }
+    # check {
+      # script          = "scripts/task/download_azure/check.sh"
+      # failure_message = "~/multicloud-lab/downloads/azure/hello-multicloud.txt is missing or its checksum does not match the original."
+    # }
 
-    solve {
-      script = "scripts/task/download_azure/solve.sh"
-    }
-  }
-}
+    # solve {
+      # script = "scripts/task/download_azure/solve.sh"
+    # }
+  # }
+# }
 
 resource "task" "download_gcp" {
   description     = "Download hello-multicloud.txt from Google Cloud Storage into ~/multicloud-lab/downloads/gcp/"

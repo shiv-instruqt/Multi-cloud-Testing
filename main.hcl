@@ -30,7 +30,7 @@ resource "lab" "multicloud_storage" {
     }
 
     chapter "upload" {
-      title = "Push the File to All Three Clouds"
+      title = "Push the File to AWS and Google Cloud"
 
       page "upload_file" {
         title     = "Upload to S3, Blob Storage and GCS"
@@ -46,10 +46,10 @@ resource "lab" "multicloud_storage" {
         reference = resource.page.download_aws
       }
 
-      page "download_azure" {
-        title     = "Download From Azure Blob Storage"
-        reference = resource.page.download_azure
-      }
+      # page "download_azure" {
+        # title     = "Download From Azure Blob Storage"
+        # reference = resource.page.download_azure
+      # }
 
       page "download_gcp" {
         title     = "Download From Google Cloud Storage"

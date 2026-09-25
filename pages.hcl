@@ -7,8 +7,8 @@ resource "page" "introduction" {
 
   variables = {
     aws_bucket      = resource.exec.setup_workstation.output.AWS_BUCKET
-    azure_account   = resource.exec.setup_workstation.output.AZURE_STORAGE_ACCOUNT
-    azure_container = resource.exec.setup_workstation.output.AZURE_CONTAINER
+    # azure_account   = resource.exec.setup_workstation.output.AZURE_STORAGE_ACCOUNT   # AZURE TEMPORARILY DISABLED
+    # azure_container = resource.exec.setup_workstation.output.AZURE_CONTAINER   # AZURE TEMPORARILY DISABLED
     gcp_bucket      = resource.exec.setup_workstation.output.GCP_BUCKET
   }
 
@@ -23,8 +23,8 @@ resource "page" "upload_file" {
 
   variables = {
     aws_bucket      = resource.exec.setup_workstation.output.AWS_BUCKET
-    azure_account   = resource.exec.setup_workstation.output.AZURE_STORAGE_ACCOUNT
-    azure_container = resource.exec.setup_workstation.output.AZURE_CONTAINER
+    # azure_account   = resource.exec.setup_workstation.output.AZURE_STORAGE_ACCOUNT   # AZURE TEMPORARILY DISABLED
+    # azure_container = resource.exec.setup_workstation.output.AZURE_CONTAINER   # AZURE TEMPORARILY DISABLED
     gcp_bucket      = resource.exec.setup_workstation.output.GCP_BUCKET
   }
 
@@ -46,19 +46,19 @@ resource "page" "download_aws" {
   }
 }
 
-resource "page" "download_azure" {
-  title = "Download From Azure Blob Storage"
-  file  = "instructions/04-download-azure.md"
+# resource "page" "download_azure" {
+  # title = "Download From Azure Blob Storage"
+  # file  = "instructions/04-download-azure.md"
 
-  variables = {
-    azure_account   = resource.exec.setup_workstation.output.AZURE_STORAGE_ACCOUNT
-    azure_container = resource.exec.setup_workstation.output.AZURE_CONTAINER
-  }
+  # variables = {
+    # azure_account   = resource.exec.setup_workstation.output.AZURE_STORAGE_ACCOUNT
+    # azure_container = resource.exec.setup_workstation.output.AZURE_CONTAINER
+  # }
 
-  activities = {
-    "download_azure" = resource.task.download_azure
-  }
-}
+  # activities = {
+    # "download_azure" = resource.task.download_azure
+  # }
+# }
 
 resource "page" "download_gcp" {
   title = "Download From Google Cloud Storage"

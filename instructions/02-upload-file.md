@@ -1,4 +1,4 @@
-# Push the File to All Three Clouds
+# Push the File to AWS and Google Cloud
 
 Now upload `hello-multicloud.txt` from your terminal to each cloud. Keep the object name `hello-multicloud.txt` everywhere.
 
@@ -24,33 +24,7 @@ Confirm it is there:
 aws s3 ls s3://$AWS_BUCKET/
 ```
 
-## 2. Azure Blob Storage
-
-Upload to container `{{azure_container}}` in storage account `{{azure_account}}`:
-
-```bash
-az storage blob upload \
-  --account-name $AZURE_STORAGE_ACCOUNT \
-  --account-key $AZURE_STORAGE_KEY \
-  --auth-mode key \
-  --container-name $AZURE_CONTAINER \
-  --name hello-multicloud.txt \
-  --file upload/hello-multicloud.txt \
-  --overwrite
-```
-
-Confirm it is there:
-
-```bash
-az storage blob list \
-  --account-name $AZURE_STORAGE_ACCOUNT \
-  --account-key $AZURE_STORAGE_KEY \
-  --auth-mode key \
-  --container-name $AZURE_CONTAINER \
-  --query "[].name" -o tsv
-```
-
-## 3. Google Cloud Storage
+## 2. Google Cloud Storage
 
 Upload to `gs://{{gcp_bucket}}`:
 

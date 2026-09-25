@@ -33,12 +33,13 @@ resource "exec" "setup_workstation" {
     LAB_AWS_SECRET_ACCESS_KEY = resource.aws_account.multicloud.user.0.secret_access_key
     LAB_AWS_REGION            = resource.aws_account.multicloud.regions.0
 
+    # AZURE TEMPORARILY DISABLED - uncomment to re-enable
     # Azure - service principal "automation" (service_principal.0)
-    LAB_AZURE_CLIENT_ID       = resource.azure_subscription.multicloud.service_principal.0.app_id
-    LAB_AZURE_CLIENT_SECRET   = resource.azure_subscription.multicloud.service_principal.0.password
-    LAB_AZURE_TENANT_ID       = resource.azure_subscription.multicloud.tenant_id
-    LAB_AZURE_SUBSCRIPTION_ID = resource.azure_subscription.multicloud.subscription_id
-    LAB_AZURE_REGION          = resource.azure_subscription.multicloud.regions.0
+    # LAB_AZURE_CLIENT_ID       = resource.azure_subscription.multicloud.service_principal.0.app_id
+    # LAB_AZURE_CLIENT_SECRET   = resource.azure_subscription.multicloud.service_principal.0.password
+    # LAB_AZURE_TENANT_ID       = resource.azure_subscription.multicloud.tenant_id
+    # LAB_AZURE_SUBSCRIPTION_ID = resource.azure_subscription.multicloud.subscription_id
+    # LAB_AZURE_REGION          = resource.azure_subscription.multicloud.regions.0
 
     # Google Cloud - service account "automation" (service_account.0)
     LAB_GCP_PROJECT_ID = resource.google_project.multicloud.project_id

@@ -1,13 +1,13 @@
 # Summary
 
-You moved the same file through three clouds from a single terminal:
+You moved the same file through two clouds from a single terminal:
 
-| Step | AWS | Azure | Google Cloud |
-| --- | --- | --- | --- |
-| Upload | `aws s3 cp` | `az storage blob upload` | `gcloud storage cp` |
-| Download | `aws s3 cp` | `az storage blob download` | `gcloud storage cp` |
+| Step | AWS | Google Cloud |
+| --- | --- | --- |
+| Upload | `aws s3 cp` | `gcloud storage cp` |
+| Download | `aws s3 cp` | `gcloud storage cp` |
 
-All three copies are checked the same way: a SHA-256 checksum of the downloaded file must match the original.
+Both copies are checked the same way: a SHA-256 checksum of the downloaded file must match the original.
 
 See every copy side by side:
 

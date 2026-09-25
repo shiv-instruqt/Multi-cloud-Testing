@@ -12,11 +12,11 @@ resource "cloud_credentials" "multicloud" {
     users  = ["student"]
   }
 
-  azure_subscription {
-    target             = resource.azure_subscription.multicloud
-    users              = ["student"]
-    service_principals = ["automation"]
-  }
+  # azure_subscription {
+    # target             = resource.azure_subscription.multicloud
+    # users              = ["student"]
+    # service_principals = ["automation"]
+  # }
 
   google_project {
     target           = resource.google_project.multicloud
