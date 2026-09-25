@@ -3,12 +3,22 @@
 # `tail -f /dev/null` keeps the container alive (same pattern as the
 # instruqt/lab-examples "demo" lab).
 # -----------------------------------------------------------------------------
+# Network - gives the workstation outbound internet access and DNS.
+# Without it, apt-get / curl in the setup script cannot resolve any host.
+resource "network" "main" {
+  subnet = "10.0.200.0/24"
+}
+
 resource "container" "workstation" {
   image {
     name = "ubuntu:22.04"
   }
 
   command = ["tail", "-f", "/dev/null"]
+
+  network {
+    id = resource.network.main.meta.id
+  }
 
   resources {
     cpu    = 2000

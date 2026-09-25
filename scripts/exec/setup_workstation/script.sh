@@ -73,7 +73,22 @@ done
 log "All cloud credentials received (Azure enabled: $AZURE_ENABLED)"
 
 # ---------------------------------------------------------------------------
-# 1. Base packages
+# 1. Wait for outbound DNS / internet (network can take a moment after start)
+# ---------------------------------------------------------------------------
+wait_for_dns() {
+  getent hosts archive.ubuntu.com >/dev/null 2>&1
+}
+log "Waiting for DNS / internet access"
+if ! retry 30 5 wait_for_dns; then
+  log "ERROR: the workstation cannot resolve archive.ubuntu.com after 150 s."
+  log "Check that the container is attached to a network resource (sandbox.hcl)."
+  log "resolv.conf: $(tr '\n' ' ' < /etc/resolv.conf)"
+  exit 1
+fi
+log "DNS OK"
+
+# ---------------------------------------------------------------------------
+# Base packages
 # ---------------------------------------------------------------------------
 log "Installing base packages"
 retry 5 10 apt-get update -y
